@@ -1,0 +1,2868 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAM Market - Par les étudiants, pour les étudiants</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        /* Arrière-plan animé 3D */
+        .gradient-bg {
+            background: linear-gradient(135deg, #001F54 0%, #F39C12 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gradient-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(243,156,18,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(0,31,84,0.1) 0%, transparent 50%);
+            animation: morphBackground 15s ease-in-out infinite;
+        }
+        
+        .gradient-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M 8 0 L 0 0 0 8" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: gridFloat 25s linear infinite;
+        }
+        
+        @keyframes morphBackground {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            33% { transform: scale(1.1) rotate(1deg); }
+            66% { transform: scale(0.9) rotate(-1deg); }
+        }
+        
+        @keyframes gridFloat {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-10px) translateY(-10px); }
+        }
+        
+        /* Effets 3D avancés */
+        .card-3d {
+            perspective: 1200px;
+            transform-style: preserve-3d;
+        }
+        
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            position: relative;
+        }
+        
+        .card-hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,31,84,0.1), rgba(243,156,18,0.1));
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-15px) rotateX(8deg) rotateY(8deg) scale(1.02);
+            box-shadow: 
+                0 30px 60px -12px rgba(0, 0, 0, 0.25),
+                0 18px 36px -18px rgba(0, 31, 84, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-hover:hover::before {
+            opacity: 1;
+        }
+        
+        .category-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-12px) rotateZ(3deg) scale(1.05);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 31, 84, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Animations d'entrée sophistiquées */
+        .fade-in {
+            animation: fadeInAdvanced 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        @keyframes fadeInAdvanced {
+            0% { 
+                opacity: 0; 
+                transform: translateY(40px) rotateX(15deg) scale(0.9);
+                filter: blur(5px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) rotateX(0deg) scale(1);
+                filter: blur(0px);
+            }
+        }
+        
+        .slide-in-left {
+            animation: slideInLeftAdvanced 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        @keyframes slideInLeftAdvanced {
+            0% { 
+                opacity: 0; 
+                transform: translateX(-60px) rotateY(-15deg) scale(0.8);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(0) rotateY(0deg) scale(1);
+            }
+        }
+        
+        .slide-in-right {
+            animation: slideInRightAdvanced 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        @keyframes slideInRightAdvanced {
+            0% { 
+                opacity: 0; 
+                transform: translateX(60px) rotateY(15deg) scale(0.8);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(0) rotateY(0deg) scale(1);
+            }
+        }
+        
+        /* Effets de pulsation 3D */
+        .pulse-3d {
+            animation: pulse3dAdvanced 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse3dAdvanced {
+            0%, 100% { 
+                transform: scale(1) rotateZ(0deg);
+                box-shadow: 0 0 0 0 rgba(0, 31, 84, 0.4);
+            }
+            50% { 
+                transform: scale(1.08) rotateZ(2deg);
+                box-shadow: 0 0 0 20px rgba(0, 31, 84, 0);
+            }
+        }
+        
+        /* Notifications avancées */
+        .notification {
+            animation: slideInNotificationAdvanced 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        @keyframes slideInNotificationAdvanced {
+            0% { 
+                transform: translateX(120%) rotateY(90deg) scale(0.8); 
+                opacity: 0;
+            }
+            100% { 
+                transform: translateX(0) rotateY(0deg) scale(1); 
+                opacity: 1;
+            }
+        }
+        
+        /* Effet de verre moderne */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Boutons 3D interactifs */
+        .button-3d {
+            transform-style: preserve-3d;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .button-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .button-3d:hover {
+            transform: translateY(-3px) rotateX(8deg) scale(1.02);
+            box-shadow: 
+                0 15px 30px rgba(0, 0, 0, 0.2),
+                0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .button-3d:hover::before {
+            left: 100%;
+        }
+        
+        .button-3d:active {
+            transform: translateY(-1px) rotateX(2deg) scale(0.98);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Éléments flottants améliorés */
+        .floating-element {
+            animation: floatingAdvanced 4s ease-in-out infinite;
+        }
+        
+        @keyframes floatingAdvanced {
+            0%, 100% { 
+                transform: translateY(0px) rotateZ(0deg) scale(1);
+            }
+            25% { 
+                transform: translateY(-8px) rotateZ(1deg) scale(1.02);
+            }
+            50% { 
+                transform: translateY(-12px) rotateZ(0deg) scale(1.05);
+            }
+            75% { 
+                transform: translateY(-8px) rotateZ(-1deg) scale(1.02);
+            }
+        }
+        
+        /* Loader 3D */
+        .loader-3d {
+            width: 50px;
+            height: 50px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate3d 2s linear infinite;
+        }
+        
+        .loader-3d::before,
+        .loader-3d::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top: 3px solid #001F54;
+            border-radius: 50%;
+        }
+        
+        .loader-3d::after {
+            transform: rotateX(90deg);
+            border-top-color: #F39C12;
+        }
+        
+        @keyframes rotate3d {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+        
+        /* Effets de particules */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: particleFloat 8s linear infinite;
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Modales avec effets 3D */
+        .modal-3d {
+            animation: modalAppear 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes modalAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.7) rotateX(45deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotateX(0deg);
+            }
+        }
+        
+        /* Effets de survol pour les liens */
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #001F54, #F39C12);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Sécurité visuelle */
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            background: linear-gradient(45deg, #10B981, #059669);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+        }
+        
+        .verified-seller {
+            position: relative;
+        }
+        
+        .verified-seller::after {
+            content: '✓';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: #10B981;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="h-full bg-gray-50">
+    <!-- Particules d'arrière-plan -->
+    <div class="particles" id="particles-container"></div>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50 glass-effect">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold text-blue-900 floating-element">
+                            UAM Market
+                            <span class="security-badge ml-2">🔒 Sécurisé</span>
+                        </h1>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#" class="nav-link text-gray-700 hover:text-blue-900 px-3 py-2 rounded-md text-sm font-medium" onclick="showPage('home')">Accueil</a>
+                        <a href="#" class="nav-link text-gray-700 hover:text-blue-900 px-3 py-2 rounded-md text-sm font-medium" onclick="showPage('catalog')">Catalogue</a>
+                        <div id="guest-menu">
+                            <a href="#" class="nav-link text-gray-700 hover:text-blue-900 px-3 py-2 rounded-md text-sm font-medium" onclick="showPage('login')">Connexion</a>
+                            <button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium button-3d ml-2" onclick="showPage('register')">
+                                Devenir vendeur
+                            </button>
+                        </div>
+                        <div id="user-menu" class="hidden flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-8 h-8 bg-blue-900 rounded-full flex items-center justify-center text-white text-sm font-bold" id="user-avatar">
+                                    U
+                                </div>
+                                <span class="text-gray-700 font-medium" id="user-name-display"></span>
+                                <div id="notifications-badge" class="hidden bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    0
+                                </div>
+                            </div>
+                            <button class="nav-link text-gray-700 hover:text-blue-900 px-3 py-2 rounded-md text-sm font-medium" onclick="showPage('dashboard')">
+                                Tableau de bord
+                            </button>
+                            <button class="nav-link text-gray-700 hover:text-blue-900 px-3 py-2 rounded-md text-sm font-medium" onclick="showPage('add-product')">
+                                Vendre
+                            </button>
+                            <button class="text-gray-700 hover:text-blue-900 px-3 py-2 rounded-md text-sm font-medium" onclick="logout()">
+                                Déconnexion
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-900">
+                        <i data-lucide="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t glass-effect">
+                <a href="#" class="block px-3 py-2 text-gray-700 hover:text-blue-900" onclick="showPage('home')">Accueil</a>
+                <a href="#" class="block px-3 py-2 text-gray-700 hover:text-blue-900" onclick="showPage('catalog')">Catalogue</a>
+                <div id="mobile-guest-menu">
+                    <a href="#" class="block px-3 py-2 text-gray-700 hover:text-blue-900" onclick="showPage('login')">Connexion</a>
+                    <button class="w-full text-left bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-md" onclick="showPage('register')">
+                        Devenir vendeur
+                    </button>
+                </div>
+                <div id="mobile-user-menu" class="hidden space-y-1">
+                    <a href="#" class="block px-3 py-2 text-gray-700 hover:text-blue-900" onclick="showPage('dashboard')">Tableau de bord</a>
+                    <a href="#" class="block px-3 py-2 text-gray-700 hover:text-blue-900" onclick="showPage('add-product')">Vendre</a>
+                    <button class="w-full text-left px-3 py-2 text-gray-700 hover:text-blue-900" onclick="logout()">Déconnexion</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page d'accueil -->
+    <div id="home-page" class="page">
+        <!-- Hero Section -->
+        <section class="gradient-bg text-white py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 fade-in">
+                    Achète, vends et échange entre étudiants de l'UAM !
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 fade-in">
+                    La première plateforme e-commerce communautaire de l'Université Amadou Mahtar Mbow
+                </p>
+                <div class="space-x-4 fade-in">
+                    <button class="bg-white text-blue-900 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors button-3d pulse-3d" onclick="showPage('catalog')">
+                        Découvrir les produits
+                    </button>
+                    <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-900 transition-colors button-3d glass-effect" onclick="showPage('login')">
+                        Devenir vendeur
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Catégories -->
+        <section class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Nos catégories</h2>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+                    <div class="text-center p-6 bg-gray-50 rounded-lg category-card cursor-pointer slide-in-left" onclick="filterByCategory('materiel')">
+                        <div class="text-4xl mb-4 floating-element">📚</div>
+                        <h3 class="font-semibold text-gray-900">Matériel scolaire</h3>
+                    </div>
+                    <div class="text-center p-6 bg-gray-50 rounded-lg category-card cursor-pointer fade-in" onclick="filterByCategory('mode')" style="animation-delay: 0.1s">
+                        <div class="text-4xl mb-4 floating-element" style="animation-delay: 0.5s">👕</div>
+                        <h3 class="font-semibold text-gray-900">Mode & Accessoires</h3>
+                    </div>
+                    <div class="text-center p-6 bg-gray-50 rounded-lg category-card cursor-pointer fade-in" onclick="filterByCategory('alimentation')" style="animation-delay: 0.2s">
+                        <div class="text-4xl mb-4 floating-element" style="animation-delay: 1s">🍔</div>
+                        <h3 class="font-semibold text-gray-900">Alimentation</h3>
+                    </div>
+                    <div class="text-center p-6 bg-gray-50 rounded-lg category-card cursor-pointer fade-in" onclick="filterByCategory('electronique')" style="animation-delay: 0.3s">
+                        <div class="text-4xl mb-4 floating-element" style="animation-delay: 1.5s">💻</div>
+                        <h3 class="font-semibold text-gray-900">Électronique</h3>
+                    </div>
+                    <div class="text-center p-6 bg-gray-50 rounded-lg category-card cursor-pointer slide-in-right" onclick="filterByCategory('services')" style="animation-delay: 0.4s">
+                        <div class="text-4xl mb-4 floating-element" style="animation-delay: 2s">🧰</div>
+                        <h3 class="font-semibold text-gray-900">Services étudiants</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comment ça marche -->
+        <section class="py-16 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Comment ça marche ?</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="bg-blue-900 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">1</div>
+                        <h3 class="text-xl font-semibold mb-4">Crée ton compte UAM</h3>
+                        <p class="text-gray-600">Inscris-toi avec ton email @uam.edu.sn pour rejoindre la communauté</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-orange-500 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">2</div>
+                        <h3 class="text-xl font-semibold mb-4">Publie ton annonce</h3>
+                        <p class="text-gray-600">Ajoute tes produits avec photos, prix et description détaillée</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-green-500 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">3</div>
+                        <h3 class="text-xl font-semibold mb-4">Vends facilement</h3>
+                        <p class="text-gray-600">Échange avec les acheteurs et finalise tes ventes sur le campus</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Produits récents -->
+        <section class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Produits récents</h2>
+                <div class="grid md:grid-cols-3 lg:grid-cols-6 gap-6" id="recent-products">
+                    <!-- Les produits seront générés dynamiquement -->
+                </div>
+                <div class="text-center mt-8">
+                    <button class="bg-blue-900 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors" onclick="showPage('catalog')">
+                        Voir tous les produits
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Page Connexion -->
+    <div id="login-page" class="page hidden">
+        <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-md w-full space-y-8 card-3d">
+                <div class="bg-white p-8 rounded-lg shadow-lg card-hover">
+                    <div class="text-center">
+                        <h2 class="text-3xl font-extrabold text-gray-900 fade-in">
+                            Connexion
+                        </h2>
+                        <p class="mt-2 text-sm text-gray-600">
+                            Accédez à votre compte UAM Market
+                        </p>
+                    </div>
+                    <form class="mt-8 space-y-6" onsubmit="handleLogin(event)">
+                        <div class="space-y-4">
+                            <div>
+                                <label for="login-email" class="block text-sm font-medium text-gray-700">Email UAM</label>
+                                <input id="login-email" name="email" type="email" required class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="votre.nom@uam.edu.sn">
+                            </div>
+                            <div>
+                                <label for="login-password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                                <input id="login-password" name="password" type="password" required class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Votre mot de passe">
+                            </div>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 button-3d">
+                                <div class="loader-3d hidden mr-3" id="login-loader"></div>
+                                Se connecter
+                            </button>
+                        </div>
+                        
+                        <div class="text-center">
+                            <p class="text-sm text-gray-600">
+                                Pas encore de compte ? 
+                                <button type="button" class="font-medium text-blue-600 hover:text-blue-500" onclick="showPage('register')">
+                                    Créer un compte
+                                </button>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Inscription -->
+    <div id="register-page" class="page hidden">
+        <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-md w-full space-y-8 card-3d">
+                <div class="bg-white p-8 rounded-lg shadow-lg card-hover">
+                    <div class="text-center">
+                        <h2 class="text-3xl font-extrabold text-gray-900 fade-in">
+                            Rejoins UAM Market
+                        </h2>
+                        <p class="mt-2 text-sm text-gray-600">
+                            Réservé aux étudiants de l'UAM
+                        </p>
+                    </div>
+                    <form class="mt-8 space-y-6" onsubmit="handleRegister(event)">
+                        <div class="space-y-4">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700">Nom complet</label>
+                                <input id="name" name="name" type="text" required class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Votre nom complet">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email UAM</label>
+                                <input id="email" name="email" type="email" required class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="votre.nom@uam.edu.sn">
+                            </div>
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                                <input id="password" name="password" type="password" required minlength="6" class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Minimum 6 caractères">
+                            </div>
+                            <div>
+                                <label for="faculty" class="block text-sm font-medium text-gray-700">École/UFR</label>
+                                <select id="faculty" name="faculty" required class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <option value="">Choisir votre école/UFR</option>
+                                    <optgroup label="École Supérieure Polytechnique (Polytech)">
+                                        <option value="genie-chimique">Génie Chimique</option>
+                                        <option value="genie-civil">Génie Civil</option>
+                                        <option value="genie-electrique">Génie Électrique</option>
+                                        <option value="genie-informatique">Génie Informatique</option>
+                                        <option value="genie-mecanique">Génie Mécanique</option>
+                                        <option value="geosciences">Géosciences Appliquées et Environnement</option>
+                                        <option value="sciences-agricoles">Sciences et Techniques Agricoles, Alimentaires et Nutritionnelles</option>
+                                        <option value="sciences-ingenieur">Sciences et techniques de l'ingénieur</option>
+                                        <option value="urbanisme">Urbanisme, Architecture et Aménagement Durable des Territoires</option>
+                                    </optgroup>
+                                    <optgroup label="UFR Sciences et Technologies Avancées (STA)">
+                                        <option value="mathematiques-physique">Mathématiques, Physique</option>
+                                        <option value="informatique-sta">Informatique</option>
+                                        <option value="ingenierie-logicielle">Ingénierie logicielle, réseaux, IA, data science</option>
+                                    </optgroup>
+                                    <optgroup label="École Supérieure des Sciences et Techniques de l'Ingénieur (ESTI)">
+                                        <option value="genie-procedes">Génie de Procédés, Emballage et Conditionnement</option>
+                                        <option value="infrastructures">Infrastructures et Génie Civil</option>
+                                        <option value="systemes-electriques">Systèmes Électriques et Énergie, Électronique et Télécommunications</option>
+                                        <option value="ingenierie-informatique">Ingénierie Informatique, Réseaux et Télécommunications</option>
+                                    </optgroup>
+                                    <optgroup label="École Supérieure des Mines, de la Géologie et de l'Environnement (ESMGE)">
+                                        <option value="mines-environnement">Mines, Environnement minier et Géomatériaux</option>
+                                        <option value="geologie">Géologie, Métallogénie et Géologie structurale</option>
+                                        <option value="developpement-durable">Développement durable, Environnement et Géomatique</option>
+                                        <option value="dynamique-eau">Dynamique de l'eau et ses différents modes de traitement</option>
+                                    </optgroup>
+                                    <optgroup label="UFR Sciences Économiques et de Gestion (SEG)">
+                                        <option value="gestion-finance">Gestion, Finance et comptabilité</option>
+                                        <option value="marketing">Marketing, Ingénierie financière</option>
+                                        <option value="management">Management des organisations</option>
+                                    </optgroup>
+                                    <optgroup label="Haute École des Sciences Économiques et de Gestion (HEEG)">
+                                        <option value="gestion-organisations">Gestion des organisations</option>
+                                    </optgroup>
+                                    <optgroup label="UFR Technologies de la Communication Numérique et de l'Audiovisuel (TECNA)">
+                                        <option value="numerique-audiovisuel">Formation dans les domaines du numérique et de l'audiovisuel</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-700">Téléphone</label>
+                                <input id="phone" name="phone" type="tel" required class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="+221 XX XXX XX XX">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <input id="seller-mode" name="seller-mode" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="seller-mode" class="ml-2 block text-sm text-gray-900">
+                                Je veux vendre des produits
+                            </label>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 button-3d">
+                                <div class="loader-3d hidden mr-3" id="register-loader"></div>
+                                Créer mon compte
+                            </button>
+                        </div>
+                        
+                        <div class="text-center">
+                            <p class="text-sm text-gray-600">
+                                Déjà un compte ? 
+                                <button type="button" class="font-medium text-blue-600 hover:text-blue-500" onclick="showPage('login')">
+                                    Se connecter
+                                </button>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Tableau de bord -->
+    <div id="dashboard-page" class="page hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 fade-in">Tableau de bord</h1>
+                <p class="text-gray-600">Gérez vos produits et vos ventes</p>
+            </div>
+
+            <!-- Statistiques -->
+            <div class="grid md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                            <i data-lucide="package" class="h-6 w-6"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Mes produits</p>
+                            <p class="text-2xl font-semibold text-gray-900" id="user-products-count">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-green-100 text-green-600">
+                            <i data-lucide="shopping-cart" class="h-6 w-6"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Ventes</p>
+                            <p class="text-2xl font-semibold text-gray-900" id="user-sales-count">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-orange-100 text-orange-600">
+                            <i data-lucide="eye" class="h-6 w-6"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Vues</p>
+                            <p class="text-2xl font-semibold text-gray-900" id="user-views-count">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                            <i data-lucide="star" class="h-6 w-6"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Note moyenne</p>
+                            <p class="text-2xl font-semibold text-gray-900">4.8</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration Wave Money -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8 card-hover">
+                <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <i data-lucide="credit-card" class="h-5 w-5 mr-2"></i>
+                    Configuration Wave Money
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="wave-number" class="block text-sm font-medium text-gray-700 mb-2">
+                            Numéro Wave Money
+                        </label>
+                        <input type="tel" id="wave-number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="+221 XX XXX XX XX">
+                        <p class="text-xs text-gray-500 mt-1">Les clients pourront vous payer directement via Wave</p>
+                    </div>
+                    <div>
+                        <label for="wave-name" class="block text-sm font-medium text-gray-700 mb-2">
+                            Nom du compte Wave
+                        </label>
+                        <input type="text" id="wave-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Nom sur le compte Wave">
+                    </div>
+                </div>
+                <button onclick="saveWaveConfig()" class="mt-4 bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-800 button-3d">
+                    Sauvegarder la configuration
+                </button>
+            </div>
+
+            <!-- Mes produits -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Mes produits</h2>
+                    <button onclick="showPage('add-product')" class="bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-800 button-3d">
+                        Ajouter un produit
+                    </button>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="user-products-grid">
+                    <!-- Les produits de l'utilisateur seront affichés ici -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Ajouter un produit -->
+    <div id="add-product-page" class="page hidden">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-lg shadow-md p-8 card-hover">
+                <h1 class="text-2xl font-bold text-gray-900 mb-6 fade-in">Ajouter un produit</h1>
+                
+                <form onsubmit="addProduct(event)" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="product-title" class="block text-sm font-medium text-gray-700 mb-2">
+                                Titre du produit
+                            </label>
+                            <input type="text" id="product-title" name="title" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="product-price" class="block text-sm font-medium text-gray-700 mb-2">
+                                Prix (FCFA)
+                            </label>
+                            <input type="number" id="product-price" name="price" required min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="product-category" class="block text-sm font-medium text-gray-700 mb-2">
+                                Catégorie
+                            </label>
+                            <select id="product-category" name="category" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Choisir une catégorie</option>
+                                <option value="materiel">Matériel scolaire</option>
+                                <option value="mode">Mode & Accessoires</option>
+                                <option value="alimentation">Alimentation</option>
+                                <option value="electronique">Électronique</option>
+                                <option value="services">Services étudiants</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="product-condition" class="block text-sm font-medium text-gray-700 mb-2">
+                                État
+                            </label>
+                            <select id="product-condition" name="condition" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Choisir l'état</option>
+                                <option value="neuf">Neuf</option>
+                                <option value="occasion">Occasion - Très bon état</option>
+                                <option value="occasion-bon">Occasion - Bon état</option>
+                                <option value="occasion-moyen">Occasion - État moyen</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="product-description" class="block text-sm font-medium text-gray-700 mb-2">
+                            Description
+                        </label>
+                        <textarea id="product-description" name="description" required rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Décrivez votre produit en détail..."></textarea>
+                    </div>
+
+                    <div>
+                        <label for="product-emoji" class="block text-sm font-medium text-gray-700 mb-2">
+                            Emoji représentatif
+                        </label>
+                        <input type="text" id="product-emoji" name="emoji" maxlength="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="📱 💻 📚 👕 🍔">
+                        <p class="text-xs text-gray-500 mt-1">Choisissez un emoji qui représente votre produit</p>
+                    </div>
+
+                    <div class="flex space-x-4">
+                        <button type="submit" class="flex-1 bg-blue-900 text-white py-3 px-4 rounded-md hover:bg-blue-800 button-3d">
+                            Publier le produit
+                        </button>
+                        <button type="button" onclick="showPage('dashboard')" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
+                            Annuler
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Catalogue -->
+    <div id="catalog-page" class="page hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-4">Catalogue des produits</h1>
+                
+                <!-- Filtres et recherche -->
+                <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Rechercher</label>
+                            <input type="text" id="search-input" placeholder="Rechercher un produit..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" oninput="filterProducts()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
+                            <select id="category-filter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" onchange="filterProducts()">
+                                <option value="">Toutes les catégories</option>
+                                <option value="materiel">Matériel scolaire</option>
+                                <option value="mode">Mode & Accessoires</option>
+                                <option value="alimentation">Alimentation</option>
+                                <option value="electronique">Électronique</option>
+                                <option value="services">Services étudiants</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Prix max</label>
+                            <input type="number" id="price-filter" placeholder="Prix maximum" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" oninput="filterProducts()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">État</label>
+                            <select id="condition-filter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" onchange="filterProducts()">
+                                <option value="">Tous les états</option>
+                                <option value="neuf">Neuf</option>
+                                <option value="occasion">Occasion</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grille des produits -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="products-grid">
+                    <!-- Les produits seront générés dynamiquement -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Profil Vendeur -->
+    <div id="seller-profile-page" class="page hidden">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="flex items-center space-x-6">
+                    <div class="w-24 h-24 bg-blue-900 rounded-full flex items-center justify-center text-white text-2xl font-bold" id="seller-avatar">
+                        AM
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900" id="seller-name">Aminata Mbaye</h1>
+                        <p class="text-gray-600" id="seller-faculty">Faculté des Sciences et Technologies</p>
+                        <p class="text-gray-500 mt-2" id="seller-bio">Étudiante en informatique, passionnée de technologie. Je vends du matériel informatique et des accessoires.</p>
+                        <div class="flex items-center mt-3 space-x-4">
+                            <span class="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                            <span class="text-sm text-gray-600">(4.8/5 - 23 avis)</span>
+                            <button class="bg-blue-900 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-800">Suivre</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Produits de ce vendeur</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="seller-products">
+                    <!-- Les produits du vendeur seront générés dynamiquement -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Messagerie -->
+    <div id="messaging-page" class="page hidden">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-lg shadow-md h-96 flex flex-col">
+                <div class="p-4 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-gray-900">Discussion avec Aminata Mbaye</h2>
+                        <a href="https://wa.me/221771234567" target="_blank" rel="noopener noreferrer" class="bg-green-500 text-white px-4 py-2 rounded-md text-sm hover:bg-green-600 flex items-center space-x-2">
+                            <span>📱</span>
+                            <span>WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="flex-1 p-4 overflow-y-auto" id="messages-container">
+                    <div class="space-y-4">
+                        <div class="flex justify-end">
+                            <div class="bg-blue-900 text-white p-3 rounded-lg max-w-xs">
+                                Bonjour, je suis intéressé par votre ordinateur portable
+                            </div>
+                        </div>
+                        <div class="flex justify-start">
+                            <div class="bg-gray-200 text-gray-900 p-3 rounded-lg max-w-xs">
+                                Salut ! Oui il est encore disponible. Tu peux passer le voir au campus ?
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-4 border-t border-gray-200">
+                    <form class="flex space-x-2" onsubmit="sendMessage(event)">
+                        <input type="text" id="message-input" placeholder="Tapez votre message..." class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <button type="submit" class="bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-800">
+                            Envoyer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Admin -->
+    <div id="admin-page" class="page hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">Tableau de bord Admin</h1>
+            
+            <!-- Statistiques -->
+            <div class="grid md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Utilisateurs</h3>
+                    <p class="text-3xl font-bold text-blue-900">247</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Produits</h3>
+                    <p class="text-3xl font-bold text-orange-500">89</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Ventes</h3>
+                    <p class="text-3xl font-bold text-green-500">156</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Signalements</h3>
+                    <p class="text-3xl font-bold text-red-500">3</p>
+                </div>
+            </div>
+
+            <!-- Gestion des utilisateurs -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Gestion des utilisateurs</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rôle</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="users-table">
+                            <!-- Les utilisateurs seront générés dynamiquement -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Gestion des produits -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Gestion des produits</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produit</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vendeur</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="products-table">
+                            <!-- Les produits seront générés dynamiquement -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">UAM Market</h3>
+                    <p class="text-gray-400">Par les étudiants, pour les étudiants de l'Université Amadou Mahtar Mbow</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Liens utiles</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Comment ça marche</a></li>
+                        <li><a href="#" class="hover:text-white">Règles de la communauté</a></li>
+                        <li><a href="#" class="hover:text-white">Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Catégories</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Matériel scolaire</a></li>
+                        <li><a href="#" class="hover:text-white">Mode & Accessoires</a></li>
+                        <li><a href="#" class="hover:text-white">Électronique</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>contact@uam-market.sn</li>
+                        <li>+221 33 XXX XX XX</li>
+                        <li>Campus UAM, Dakar</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 UAM Market. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Configuration de sécurité
+        const SECURITY_CONFIG = {
+            SESSION_TIMEOUT: 24 * 60 * 60 * 1000, // 24 heures
+            MAX_LOGIN_ATTEMPTS: 5,
+            LOCKOUT_DURATION: 15 * 60 * 1000, // 15 minutes
+            ENCRYPTION_KEY: 'UAM_MARKET_2024_SECURE_KEY'
+        };
+
+        // Données simulées avec plus de produits
+        let sampleProducts = [
+            {
+                id: 1,
+                title: "MacBook Pro 13\"",
+                price: 450000,
+                category: "electronique",
+                condition: "occasion",
+                seller: "Aminata Mbaye",
+                sellerId: 1,
+                image: "💻",
+                description: "MacBook Pro en excellent état, parfait pour les études. Processeur Intel i5, 8GB RAM, 256GB SSD.",
+                views: 45,
+                createdAt: new Date('2024-01-15').toISOString(),
+                verified: true
+            },
+            {
+                id: 2,
+                title: "Livre de Mathématiques L1",
+                price: 15000,
+                category: "materiel",
+                condition: "neuf",
+                seller: "Moussa Diop",
+                sellerId: 2,
+                image: "📚",
+                description: "Manuel de mathématiques L1, jamais utilisé. Édition 2024 avec exercices corrigés.",
+                views: 23,
+                createdAt: new Date('2024-01-20').toISOString(),
+                verified: true
+            },
+            {
+                id: 3,
+                title: "Sac à dos Eastpak",
+                price: 25000,
+                category: "mode",
+                condition: "occasion",
+                seller: "Fatou Sall",
+                sellerId: 3,
+                image: "🎒",
+                description: "Sac à dos résistant, idéal pour transporter les cours. Compartiment laptop inclus.",
+                views: 18,
+                createdAt: new Date('2024-01-18').toISOString(),
+                verified: true
+            },
+            {
+                id: 4,
+                title: "Cours particuliers Anglais",
+                price: 10000,
+                category: "services",
+                condition: "neuf",
+                seller: "Omar Ba",
+                sellerId: 4,
+                image: "🎓",
+                description: "Cours d'anglais par étudiant en Master LLCE. Préparation TOEFL/IELTS disponible.",
+                views: 67,
+                createdAt: new Date('2024-01-10').toISOString(),
+                verified: true
+            },
+            {
+                id: 5,
+                title: "Sandwich fait maison",
+                price: 1500,
+                category: "alimentation",
+                condition: "neuf",
+                seller: "Aïcha Ndiaye",
+                sellerId: 5,
+                image: "🥪",
+                description: "Sandwichs frais préparés chaque matin. Ingrédients locaux et bio.",
+                views: 89,
+                createdAt: new Date('2024-01-22').toISOString(),
+                verified: true
+            },
+            {
+                id: 6,
+                title: "Calculatrice scientifique Casio",
+                price: 8000,
+                category: "materiel",
+                condition: "occasion",
+                seller: "Ibrahima Fall",
+                sellerId: 6,
+                image: "🔢",
+                description: "Calculatrice Casio fx-991EX en bon état. Parfaite pour les examens.",
+                views: 34,
+                createdAt: new Date('2024-01-12').toISOString(),
+                verified: true
+            },
+            {
+                id: 7,
+                title: "iPhone 12 Pro",
+                price: 320000,
+                category: "electronique",
+                condition: "occasion",
+                seller: "Khadija Sy",
+                sellerId: 7,
+                image: "📱",
+                description: "iPhone 12 Pro 128GB, état impeccable. Batterie à 89%. Avec chargeur et coque.",
+                views: 156,
+                createdAt: new Date('2024-01-25').toISOString(),
+                verified: true
+            },
+            {
+                id: 8,
+                title: "Robe traditionnelle",
+                price: 35000,
+                category: "mode",
+                condition: "neuf",
+                seller: "Mariama Diallo",
+                sellerId: 8,
+                image: "👗",
+                description: "Belle robe traditionnelle sénégalaise, taille M. Parfaite pour les cérémonies.",
+                views: 42,
+                createdAt: new Date('2024-01-19').toISOString(),
+                verified: true
+            }
+        ];
+
+        const sampleUsers = [
+            { 
+                id: 1, 
+                name: "Aminata Mbaye", 
+                email: "aminata.mbaye@uam.edu.sn", 
+                role: "vendeur",
+                faculty: "sciences",
+                phone: "+221771234567",
+                waveNumber: "+221771234567",
+                waveName: "Aminata Mbaye",
+                verified: true,
+                createdAt: new Date('2024-01-01').toISOString()
+            },
+            { 
+                id: 2, 
+                name: "Moussa Diop", 
+                email: "moussa.diop@uam.edu.sn", 
+                role: "vendeur",
+                faculty: "lettres",
+                phone: "+221772345678",
+                verified: true,
+                createdAt: new Date('2024-01-02').toISOString()
+            },
+            { 
+                id: 3, 
+                name: "Fatou Sall", 
+                email: "fatou.sall@uam.edu.sn", 
+                role: "vendeur",
+                faculty: "economie",
+                phone: "+221773456789",
+                verified: true,
+                createdAt: new Date('2024-01-03').toISOString()
+            },
+            { 
+                id: 4, 
+                name: "Omar Ba", 
+                email: "omar.ba@uam.edu.sn", 
+                role: "vendeur",
+                faculty: "lettres",
+                phone: "+221774567890",
+                verified: true,
+                createdAt: new Date('2024-01-04').toISOString()
+            },
+            { 
+                id: 5, 
+                name: "Aïcha Ndiaye", 
+                email: "aicha.ndiaye@uam.edu.sn", 
+                role: "vendeur",
+                faculty: "medecine",
+                phone: "+221775678901",
+                verified: true,
+                createdAt: new Date('2024-01-05').toISOString()
+            }
+        ];
+
+        let currentUser = null;
+        let filteredProducts = [...sampleProducts];
+        let userProducts = [];
+        let orders = [];
+        let loginAttempts = {};
+
+        // Système de chiffrement simple
+        function encryptData(data) {
+            try {
+                return CryptoJS.AES.encrypt(JSON.stringify(data), SECURITY_CONFIG.ENCRYPTION_KEY).toString();
+            } catch (e) {
+                return btoa(JSON.stringify(data)); // Fallback
+            }
+        }
+
+        function decryptData(encryptedData) {
+            try {
+                const bytes = CryptoJS.AES.decrypt(encryptedData, SECURITY_CONFIG.ENCRYPTION_KEY);
+                return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+            } catch (e) {
+                try {
+                    return JSON.parse(atob(encryptedData)); // Fallback
+                } catch (e2) {
+                    return null;
+                }
+            }
+        }
+
+        // Validation de sécurité
+        function validateEmail(email) {
+            const uamEmailRegex = /^[a-zA-Z0-9._%+-]+@uam\.edu\.sn$/;
+            return uamEmailRegex.test(email);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 6;
+        }
+
+        function sanitizeInput(input) {
+            if (typeof input !== 'string') return input;
+            return input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                       .replace(/javascript:/gi, '')
+                       .replace(/on\w+\s*=/gi, '');
+        }
+
+        // Gestion des tentatives de connexion
+        function checkLoginAttempts(email) {
+            const attempts = loginAttempts[email];
+            if (!attempts) return true;
+            
+            if (attempts.count >= SECURITY_CONFIG.MAX_LOGIN_ATTEMPTS) {
+                const timeSinceLastAttempt = Date.now() - attempts.lastAttempt;
+                if (timeSinceLastAttempt < SECURITY_CONFIG.LOCKOUT_DURATION) {
+                    const remainingTime = Math.ceil((SECURITY_CONFIG.LOCKOUT_DURATION - timeSinceLastAttempt) / 60000);
+                    throw new Error(`Compte temporairement bloqué. Réessayez dans ${remainingTime} minutes.`);
+                } else {
+                    // Reset attempts after lockout period
+                    delete loginAttempts[email];
+                    return true;
+                }
+            }
+            return true;
+        }
+
+        function recordLoginAttempt(email, success) {
+            if (success) {
+                delete loginAttempts[email];
+            } else {
+                if (!loginAttempts[email]) {
+                    loginAttempts[email] = { count: 0, lastAttempt: 0 };
+                }
+                loginAttempts[email].count++;
+                loginAttempts[email].lastAttempt = Date.now();
+            }
+        }
+
+        // Génération d'effets de particules
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            if (!container) return;
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (8 + Math.random() * 4) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Navigation
+        function showPage(pageId) {
+            // Vérifier l'authentification pour certaines pages
+            const protectedPages = ['dashboard', 'add-product'];
+            if (protectedPages.includes(pageId) && !currentUser) {
+                showNotification('Veuillez vous connecter pour accéder à cette page', 'error');
+                showPage('login');
+                return;
+            }
+
+            // Cacher toutes les pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // Afficher la page demandée
+            const targetPage = document.getElementById(pageId + '-page');
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+            }
+            
+            // Mettre à jour la navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-blue-900', 'font-semibold');
+                link.classList.add('text-gray-700');
+            });
+            
+            // Charger le contenu spécifique à la page
+            switch(pageId) {
+                case 'home':
+                    loadRecentProducts();
+                    break;
+                case 'catalog':
+                    loadProducts();
+                    break;
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'admin':
+                    loadAdminData();
+                    break;
+                case 'seller-profile':
+                    loadSellerProfile();
+                    break;
+            }
+        }
+
+        // Menu mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+
+        // Système de stockage sécurisé
+        function saveUserData(userData) {
+            try {
+                const encryptedData = encryptData({
+                    ...userData,
+                    sessionStart: Date.now()
+                });
+                localStorage.setItem('uam_market_user', encryptedData);
+            } catch (e) {
+                console.error('Erreur de sauvegarde:', e);
+            }
+        }
+
+        function loadUserData() {
+            try {
+                const encryptedData = localStorage.getItem('uam_market_user');
+                if (!encryptedData) return null;
+                
+                const userData = decryptData(encryptedData);
+                if (!userData) return null;
+                
+                // Vérifier l'expiration de session
+                const sessionAge = Date.now() - (userData.sessionStart || 0);
+                if (sessionAge > SECURITY_CONFIG.SESSION_TIMEOUT) {
+                    localStorage.removeItem('uam_market_user');
+                    return null;
+                }
+                
+                return userData;
+            } catch (e) {
+                console.error('Erreur de chargement:', e);
+                localStorage.removeItem('uam_market_user');
+                return null;
+            }
+        }
+
+        function saveUsersDatabase(users) {
+            try {
+                const encryptedData = encryptData(users);
+                localStorage.setItem('uam_market_users', encryptedData);
+            } catch (e) {
+                console.error('Erreur de sauvegarde BDD:', e);
+            }
+        }
+
+        function loadUsersDatabase() {
+            try {
+                const encryptedData = localStorage.getItem('uam_market_users');
+                if (!encryptedData) return [...sampleUsers];
+                
+                const users = decryptData(encryptedData);
+                return users || [...sampleUsers];
+            } catch (e) {
+                console.error('Erreur de chargement BDD:', e);
+                return [...sampleUsers];
+            }
+        }
+
+        function saveProductsDatabase(products) {
+            try {
+                const encryptedData = encryptData(products);
+                localStorage.setItem('uam_market_products', encryptedData);
+            } catch (e) {
+                console.error('Erreur de sauvegarde produits:', e);
+            }
+        }
+
+        function loadProductsDatabase() {
+            try {
+                const encryptedData = localStorage.getItem('uam_market_products');
+                if (!encryptedData) return [...sampleProducts];
+                
+                const products = decryptData(encryptedData);
+                return products || [...sampleProducts];
+            } catch (e) {
+                console.error('Erreur de chargement produits:', e);
+                return [...sampleProducts];
+            }
+        }
+
+        // Connexion
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const email = sanitizeInput(formData.get('email'));
+            const password = formData.get('password');
+            
+            // Validation
+            if (!validateEmail(email)) {
+                showNotification('Email UAM invalide', 'error');
+                return;
+            }
+            
+            try {
+                checkLoginAttempts(email);
+                
+                // Simuler la vérification du mot de passe
+                const users = loadUsersDatabase();
+                const user = users.find(u => u.email === email);
+                
+                if (!user) {
+                    recordLoginAttempt(email, false);
+                    showNotification('Email ou mot de passe incorrect', 'error');
+                    return;
+                }
+                
+                // Dans un vrai système, on vérifierait le hash du mot de passe
+                // Ici on simule une connexion réussie
+                recordLoginAttempt(email, true);
+                
+                currentUser = { ...user };
+                saveUserData(currentUser);
+                updateUserInterface();
+                
+                showNotification(`Bon retour ${user.name} ! 🎉`, 'success');
+                
+                setTimeout(() => {
+                    showPage('dashboard');
+                }, 1500);
+                
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        }
+
+        // Inscription
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const email = sanitizeInput(formData.get('email'));
+            const password = formData.get('password');
+            const name = sanitizeInput(formData.get('name'));
+            
+            // Validation
+            if (!validateEmail(email)) {
+                showNotification('Seuls les emails @uam.edu.sn sont autorisés', 'error');
+                return;
+            }
+            
+            if (!validatePassword(password)) {
+                showNotification('Le mot de passe doit contenir au moins 6 caractères', 'error');
+                return;
+            }
+            
+            // Vérifier si l'utilisateur existe déjà
+            let users = loadUsersDatabase();
+            if (users.find(user => user.email === email)) {
+                showNotification('Un compte existe déjà avec cet email', 'error');
+                return;
+            }
+            
+            // Créer le nouveau compte
+            const newUser = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                faculty: formData.get('faculty'),
+                phone: sanitizeInput(formData.get('phone')),
+                role: formData.get('seller-mode') ? 'vendeur' : 'acheteur',
+                verified: false,
+                createdAt: new Date().toISOString(),
+                notifications: []
+            };
+            
+            users.push(newUser);
+            saveUsersDatabase(users);
+            
+            currentUser = newUser;
+            saveUserData(currentUser);
+            updateUserInterface();
+            
+            showNotification('Compte créé avec succès ! Bienvenue sur UAM Market 🚀', 'success');
+            
+            setTimeout(() => {
+                showPage('dashboard');
+            }, 1500);
+        }
+
+        // Déconnexion
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('uam_market_user');
+            updateUserInterface();
+            showNotification('Déconnexion réussie ! À bientôt 👋', 'info');
+            showPage('home');
+        }
+
+        // Mettre à jour l'interface utilisateur
+        function updateUserInterface() {
+            const guestMenu = document.getElementById('guest-menu');
+            const userMenu = document.getElementById('user-menu');
+            const mobileGuestMenu = document.getElementById('mobile-guest-menu');
+            const mobileUserMenu = document.getElementById('mobile-user-menu');
+            const userNameDisplay = document.getElementById('user-name-display');
+            const userAvatar = document.getElementById('user-avatar');
+            
+            if (currentUser) {
+                // Afficher le menu utilisateur
+                if (guestMenu) guestMenu.style.display = 'none';
+                if (userMenu) userMenu.classList.remove('hidden');
+                if (mobileGuestMenu) mobileGuestMenu.classList.add('hidden');
+                if (mobileUserMenu) mobileUserMenu.classList.remove('hidden');
+                
+                if (userNameDisplay) userNameDisplay.textContent = currentUser.name;
+                if (userAvatar) userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+                
+                // Mettre à jour le badge de notifications
+                updateNotificationsBadge();
+            } else {
+                // Afficher le menu invité
+                if (guestMenu) guestMenu.style.display = 'block';
+                if (userMenu) userMenu.classList.add('hidden');
+                if (mobileGuestMenu) mobileGuestMenu.classList.remove('hidden');
+                if (mobileUserMenu) mobileUserMenu.classList.add('hidden');
+            }
+        }
+
+        // Charger le tableau de bord
+        function loadDashboard() {
+            if (!currentUser) return;
+            
+            // Charger les produits de l'utilisateur
+            const allProducts = loadProductsDatabase();
+            userProducts = allProducts.filter(product => product.sellerId === currentUser.id);
+            
+            // Mettre à jour les statistiques
+            document.getElementById('user-products-count').textContent = userProducts.length;
+            document.getElementById('user-sales-count').textContent = Math.floor(Math.random() * 10);
+            document.getElementById('user-views-count').textContent = userProducts.reduce((sum, p) => sum + (p.views || 0), 0);
+            
+            // Charger la configuration Wave si elle existe
+            if (currentUser.waveNumber) {
+                document.getElementById('wave-number').value = currentUser.waveNumber;
+            }
+            if (currentUser.waveName) {
+                document.getElementById('wave-name').value = currentUser.waveName;
+            }
+            
+            // Afficher les produits de l'utilisateur
+            loadUserProducts();
+        }
+
+        // Charger les produits de l'utilisateur
+        function loadUserProducts() {
+            const container = document.getElementById('user-products-grid');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (userProducts.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <div class="text-6xl mb-4">📦</div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun produit</h3>
+                        <p class="text-gray-500 mb-4">Vous n'avez pas encore ajouté de produits</p>
+                        <button onclick="showPage('add-product')" class="bg-blue-900 text-white px-6 py-2 rounded-md hover:bg-blue-800 button-3d">
+                            Ajouter votre premier produit
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            userProducts.forEach(product => {
+                const productCard = createUserProductCard(product);
+                container.appendChild(productCard);
+            });
+        }
+
+        // Créer une carte produit pour l'utilisateur
+        function createUserProductCard(product) {
+            const div = document.createElement('div');
+            div.className = 'bg-white rounded-lg shadow-md overflow-hidden card-hover';
+            
+            div.innerHTML = `
+                <div class="h-32 bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center text-4xl relative">
+                    <div class="floating-element">${product.image}</div>
+                    <div class="absolute top-2 right-2">
+                        <span class="text-xs px-2 py-1 bg-white bg-opacity-80 rounded-full font-medium ${product.condition === 'neuf' ? 'text-green-600' : 'text-orange-600'}">${product.condition}</span>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">${product.title}</h3>
+                    <p class="text-gray-600 text-sm mb-2 line-clamp-2">${product.description}</p>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-lg font-bold text-blue-900">${formatPrice(product.price)}</span>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <i data-lucide="eye" class="h-3 w-3 mr-1"></i>
+                            ${product.views || 0}
+                        </div>
+                    </div>
+                    <div class="flex space-x-2 mt-3">
+                        <button class="flex-1 bg-blue-900 text-white py-2 px-3 rounded text-sm hover:bg-blue-800 button-3d" onclick="editProduct(${product.id})">
+                            Modifier
+                        </button>
+                        <button class="bg-red-500 text-white py-2 px-3 rounded text-sm hover:bg-red-600 button-3d" onclick="deleteProduct(${product.id})">
+                            Supprimer
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return div;
+        }
+
+        // Sauvegarder la configuration Wave
+        function saveWaveConfig() {
+            if (!currentUser) return;
+            
+            const waveNumber = sanitizeInput(document.getElementById('wave-number').value);
+            const waveName = sanitizeInput(document.getElementById('wave-name').value);
+            
+            if (!waveNumber || !waveName) {
+                showNotification('Veuillez remplir tous les champs Wave Money', 'error');
+                return;
+            }
+            
+            // Mettre à jour l'utilisateur
+            currentUser.waveNumber = waveNumber;
+            currentUser.waveName = waveName;
+            
+            // Sauvegarder dans la base d'utilisateurs
+            let users = loadUsersDatabase();
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+                saveUsersDatabase(users);
+            }
+            
+            saveUserData(currentUser);
+            showNotification('Configuration Wave Money sauvegardée ! 💰', 'success');
+        }
+
+        // Ajouter un produit
+        function addProduct(event) {
+            event.preventDefault();
+            
+            if (!currentUser) {
+                showNotification('Veuillez vous connecter', 'error');
+                return;
+            }
+            
+            const formData = new FormData(event.target);
+            
+            const newProduct = {
+                id: Date.now(),
+                title: sanitizeInput(formData.get('title')),
+                price: parseInt(formData.get('price')),
+                category: formData.get('category'),
+                condition: formData.get('condition'),
+                description: sanitizeInput(formData.get('description')),
+                image: formData.get('emoji') || '📦',
+                seller: currentUser.name,
+                sellerId: currentUser.id,
+                views: 0,
+                createdAt: new Date().toISOString(),
+                verified: false
+            };
+            
+            // Ajouter à la base de produits
+            let allProducts = loadProductsDatabase();
+            allProducts.push(newProduct);
+            saveProductsDatabase(allProducts);
+            
+            // Mettre à jour les produits globaux
+            sampleProducts = allProducts;
+            filteredProducts = [...allProducts];
+            
+            showNotification('Produit ajouté avec succès ! 🎉', 'success');
+            
+            // Réinitialiser le formulaire
+            event.target.reset();
+            
+            setTimeout(() => {
+                showPage('dashboard');
+            }, 1500);
+        }
+
+        // Menu mobile
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Système de stockage local
+        function saveUserData(userData) {
+            localStorage.setItem('uam_market_user', JSON.stringify(userData));
+        }
+
+        function loadUserData() {
+            const userData = localStorage.getItem('uam_market_user');
+            return userData ? JSON.parse(userData) : null;
+        }
+
+        function saveUsersDatabase(users) {
+            localStorage.setItem('uam_market_users', JSON.stringify(users));
+        }
+
+        function loadUsersDatabase() {
+            const users = localStorage.getItem('uam_market_users');
+            return users ? JSON.parse(users) : [];
+        }
+
+        // Connexion/Inscription
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const email = formData.get('email');
+            const name = formData.get('name');
+            
+            // Vérifier que l'email est bien @uam.edu.sn
+            if (!email.endsWith('@uam.edu.sn')) {
+                showNotification('Erreur : Seuls les emails @uam.edu.sn sont autorisés', 'error');
+                return;
+            }
+
+            // Charger la base d'utilisateurs
+            let users = loadUsersDatabase();
+            
+            // Vérifier si l'utilisateur existe déjà
+            let existingUser = users.find(user => user.email === email);
+            
+            if (existingUser) {
+                // Connexion d'un utilisateur existant
+                currentUser = existingUser;
+                showNotification(`Bon retour ${existingUser.name} ! 🎉`, 'success');
+            } else {
+                // Création d'un nouveau compte
+                currentUser = {
+                    id: Date.now(),
+                    name: name,
+                    email: email,
+                    faculty: formData.get('faculty'),
+                    phone: formData.get('phone'),
+                    role: formData.get('seller-mode') ? 'vendeur' : 'acheteur',
+                    createdAt: new Date().toISOString(),
+                    notifications: []
+                };
+                
+                // Ajouter à la base d'utilisateurs
+                users.push(currentUser);
+                saveUsersDatabase(users);
+                
+                showNotification('Compte créé avec succès ! Bienvenue sur UAM Market 🚀', 'success');
+            }
+            
+            // Sauvegarder la session
+            saveUserData(currentUser);
+            updateUserInterface();
+            
+            // Rediriger vers l'accueil
+            setTimeout(() => {
+                showPage('home');
+            }, 1500);
+        }
+
+        // Déconnexion
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('uam_market_user');
+            updateUserInterface();
+            showNotification('Déconnexion réussie ! À bientôt 👋', 'info');
+            showPage('home');
+        }
+
+        // Mettre à jour l'interface utilisateur
+        function updateUserInterface() {
+            const userMenu = document.getElementById('user-menu');
+            const userNameDisplay = document.getElementById('user-name-display');
+            const loginLinks = document.querySelectorAll('[onclick="showPage(\'login\')"]');
+            
+            if (currentUser) {
+                userMenu.classList.remove('hidden');
+                userNameDisplay.textContent = `Salut ${currentUser.name} !`;
+                loginLinks.forEach(link => link.style.display = 'none');
+            } else {
+                userMenu.classList.add('hidden');
+                loginLinks.forEach(link => link.style.display = 'block');
+            }
+        }
+
+        // Charger les produits récents
+        function loadRecentProducts() {
+            const container = document.getElementById('recent-products');
+            container.innerHTML = '';
+            
+            sampleProducts.slice(0, 6).forEach(product => {
+                const productCard = createProductCard(product, true);
+                container.appendChild(productCard);
+            });
+        }
+
+        // Charger tous les produits
+        function loadProducts() {
+            const container = document.getElementById('products-grid');
+            container.innerHTML = '';
+            
+            filteredProducts.forEach(product => {
+                const productCard = createProductCard(product, false);
+                container.appendChild(productCard);
+            });
+        }
+
+        // Créer une carte produit
+        function createProductCard(product, isCompact = false) {
+            const div = document.createElement('div');
+            div.className = `bg-white rounded-lg shadow-md overflow-hidden card-hover card-3d ${isCompact ? 'h-64' : 'h-80'}`;
+            
+            div.innerHTML = `
+                <div class="h-32 bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center text-4xl relative overflow-hidden">
+                    <div class="floating-element">${product.image}</div>
+                    <div class="absolute top-2 right-2">
+                        <span class="text-xs px-2 py-1 bg-white bg-opacity-80 rounded-full font-medium ${product.condition === 'neuf' ? 'text-green-600' : 'text-orange-600'}">${product.condition}</span>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2 ${isCompact ? 'text-sm' : 'text-lg'}">${product.title}</h3>
+                    <p class="text-gray-600 text-sm mb-2 line-clamp-2">${product.description}</p>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-lg font-bold text-blue-900">${formatPrice(product.price)}</span>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="w-2 h-2 bg-green-400 rounded-full mr-1"></span>
+                            En ligne
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-3 flex items-center">
+                        <span class="w-4 h-4 bg-blue-900 rounded-full mr-2 flex items-center justify-center text-white text-xs">${product.seller.charAt(0)}</span>
+                        ${product.seller}
+                    </p>
+                    <div class="flex space-x-2">
+                        <button class="flex-1 bg-blue-900 text-white py-2 px-3 rounded text-sm hover:bg-blue-800 button-3d transition-all" onclick="orderProduct(${product.id})">
+                            Commander
+                        </button>
+                        <button class="bg-gray-200 text-gray-700 py-2 px-3 rounded text-sm hover:bg-gray-300 button-3d" onclick="contactSeller(${product.id})">
+                            💬
+                        </button>
+                        <button class="bg-orange-100 text-orange-600 py-2 px-3 rounded text-sm hover:bg-orange-200 button-3d" onclick="showSellerProfile(${product.id})">
+                            👤
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return div;
+        }
+
+        // Filtrer les produits
+        function filterProducts() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const category = document.getElementById('category-filter').value;
+            const maxPrice = document.getElementById('price-filter').value;
+            const condition = document.getElementById('condition-filter').value;
+            
+            filteredProducts = sampleProducts.filter(product => {
+                const matchesSearch = product.title.toLowerCase().includes(searchTerm) || 
+                                    product.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = !category || product.category === category;
+                const matchesPrice = !maxPrice || product.price <= parseInt(maxPrice);
+                const matchesCondition = !condition || product.condition === condition;
+                
+                return matchesSearch && matchesCategory && matchesPrice && matchesCondition;
+            });
+            
+            loadProducts();
+        }
+
+        // Filtrer par catégorie depuis l'accueil
+        function filterByCategory(category) {
+            document.getElementById('category-filter').value = category;
+            showPage('catalog');
+            setTimeout(() => {
+                filterProducts();
+            }, 100);
+        }
+
+        // Système de notifications
+        function addNotification(userId, message, type = 'info') {
+            let users = loadUsersDatabase();
+            const userIndex = users.findIndex(user => user.id === userId);
+            
+            if (userIndex !== -1) {
+                if (!users[userIndex].notifications) {
+                    users[userIndex].notifications = [];
+                }
+                
+                users[userIndex].notifications.push({
+                    id: Date.now(),
+                    message: message,
+                    type: type,
+                    timestamp: new Date().toISOString(),
+                    read: false
+                });
+                
+                saveUsersDatabase(users);
+                
+                // Si c'est l'utilisateur actuel, mettre à jour ses données
+                if (currentUser && currentUser.id === userId) {
+                    currentUser = users[userIndex];
+                    saveUserData(currentUser);
+                }
+            }
+        }
+
+        function showUserNotifications() {
+            if (!currentUser || !currentUser.notifications) return;
+            
+            const unreadNotifications = currentUser.notifications.filter(notif => !notif.read);
+            
+            unreadNotifications.forEach(notification => {
+                showNotification(notification.message, notification.type);
+                
+                // Marquer comme lu
+                notification.read = true;
+            });
+            
+            if (unreadNotifications.length > 0) {
+                saveUserData(currentUser);
+                let users = loadUsersDatabase();
+                const userIndex = users.findIndex(user => user.id === currentUser.id);
+                if (userIndex !== -1) {
+                    users[userIndex] = currentUser;
+                    saveUsersDatabase(users);
+                }
+            }
+        }
+
+        // Contacter un vendeur
+        function contactSeller(productId) {
+            if (!currentUser) {
+                showNotification('Veuillez vous connecter pour contacter un vendeur', 'error');
+                showPage('login');
+                return;
+            }
+            
+            const product = sampleProducts.find(p => p.id === productId);
+            if (product) {
+                // Trouver le vendeur
+                const users = loadUsersDatabase();
+                const seller = users.find(user => user.name === product.seller);
+                
+                if (seller) {
+                    // Envoyer une notification au vendeur
+                    addNotification(
+                        seller.id, 
+                        `🛒 Nouvelle demande de ${currentUser.name} pour "${product.title}"`, 
+                        'order'
+                    );
+                    
+                    showNotification(`Message envoyé à ${product.seller} ! 📩`, 'success');
+                }
+            }
+            
+            showPage('messaging');
+        }
+
+        // Commander un produit
+        function orderProduct(productId) {
+            if (!currentUser) {
+                showNotification('Veuillez vous connecter pour commander', 'error');
+                showPage('login');
+                return;
+            }
+            
+            const product = sampleProducts.find(p => p.id === productId);
+            if (product) {
+                // Trouver le vendeur
+                const users = loadUsersDatabase();
+                const seller = users.find(user => user.name === product.seller);
+                
+                if (seller) {
+                    // Envoyer une notification au vendeur
+                    addNotification(
+                        seller.id, 
+                        `🎉 Nouvelle commande de ${currentUser.name} pour "${product.title}" - ${formatPrice(product.price)}`, 
+                        'success'
+                    );
+                    
+                    showNotification(`Commande passée ! ${product.seller} a été notifié 🚀`, 'success');
+                    
+                    // Simuler la création d'une commande
+                    const order = {
+                        id: Date.now(),
+                        productId: productId,
+                        buyerId: currentUser.id,
+                        sellerId: seller.id,
+                        status: 'pending',
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    // Sauvegarder la commande (simulation)
+                    let orders = JSON.parse(localStorage.getItem('uam_market_orders') || '[]');
+                    orders.push(order);
+                    localStorage.setItem('uam_market_orders', JSON.stringify(orders));
+                }
+            }
+        }
+
+        // Afficher le profil d'un vendeur
+        function showSellerProfile(productId) {
+            showPage('seller-profile');
+        }
+
+        // Charger le profil vendeur
+        function loadSellerProfile() {
+            const sellerProducts = document.getElementById('seller-products');
+            sellerProducts.innerHTML = '';
+            
+            // Afficher quelques produits du vendeur
+            sampleProducts.slice(0, 3).forEach(product => {
+                const productCard = createProductCard(product, false);
+                sellerProducts.appendChild(productCard);
+            });
+        }
+
+        // Envoyer un message
+        function sendMessage(event) {
+            event.preventDefault();
+            
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput.value.trim();
+            
+            if (!message) return;
+            
+            const messagesContainer = document.getElementById('messages-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'flex justify-end';
+            messageDiv.innerHTML = `
+                <div class="bg-blue-900 text-white p-3 rounded-lg max-w-xs">
+                    ${message}
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messageInput.value = '';
+            
+            // Faire défiler vers le bas
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Charger les données admin
+        function loadAdminData() {
+            loadUsersTable();
+            loadProductsTable();
+        }
+
+        // Charger le tableau des utilisateurs
+        function loadUsersTable() {
+            const tbody = document.getElementById('users-table');
+            tbody.innerHTML = '';
+            
+            sampleUsers.forEach(user => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getRoleBadgeClass(user.role)}">
+                            ${user.role}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button class="text-blue-600 hover:text-blue-900 mr-3">Modifier</button>
+                        <button class="text-red-600 hover:text-red-900">Bloquer</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Charger le tableau des produits
+        function loadProductsTable() {
+            const tbody = document.getElementById('products-table');
+            tbody.innerHTML = '';
+            
+            sampleProducts.forEach(product => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${product.title}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.seller}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatPrice(product.price)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Actif
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button class="text-green-600 hover:text-green-900 mr-3">Approuver</button>
+                        <button class="text-red-600 hover:text-red-900">Supprimer</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Utilitaires
+        function formatPrice(price) {
+            return new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: 'XOF',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        function getRoleBadgeClass(role) {
+            switch(role) {
+                case 'admin': return 'bg-red-100 text-red-800';
+                case 'vendeur': return 'bg-blue-100 text-blue-800';
+                case 'acheteur': return 'bg-green-100 text-green-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg notification max-w-sm ${
+                type === 'success' ? 'bg-green-500 text-white' : 
+                type === 'error' ? 'bg-red-500 text-white' : 
+                type === 'order' ? 'bg-orange-500 text-white' :
+                'bg-blue-500 text-white'
+            }`;
+            
+            const icon = type === 'success' ? '✅' : 
+                        type === 'error' ? '❌' : 
+                        type === 'order' ? '🛒' : 'ℹ️';
+            
+            notification.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <span class="text-xl">${icon}</span>
+                    <span class="flex-1">${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-white hover:text-gray-200 ml-2">
+                        ✕
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove après 5 secondes
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.style.animation = 'slideOutNotification 0.3s ease-in forwards';
+                    setTimeout(() => {
+                        if (notification.parentElement) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }
+            }, 5000);
+        }
+
+        // Fonctions restantes
+        function editProduct(productId) {
+            showNotification('Fonction de modification en cours de développement', 'info');
+        }
+
+        function deleteProduct(productId) {
+            if (!currentUser) return;
+            
+            // Confirmation de suppression
+            const confirmDelete = document.createElement('div');
+            confirmDelete.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            confirmDelete.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4 modal-3d">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Confirmer la suppression</h3>
+                    <p class="text-gray-600 mb-6">Êtes-vous sûr de vouloir supprimer ce produit ? Cette action est irréversible.</p>
+                    <div class="flex space-x-4">
+                        <button onclick="confirmDeleteProduct(${productId}); this.parentElement.parentElement.parentElement.remove();" class="flex-1 bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 button-3d">
+                            Supprimer
+                        </button>
+                        <button onclick="this.parentElement.parentElement.parentElement.remove();" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400">
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(confirmDelete);
+        }
+
+        function confirmDeleteProduct(productId) {
+            let allProducts = loadProductsDatabase();
+            allProducts = allProducts.filter(p => p.id !== productId);
+            saveProductsDatabase(allProducts);
+            
+            // Mettre à jour les produits globaux
+            sampleProducts = allProducts;
+            filteredProducts = [...allProducts];
+            
+            showNotification('Produit supprimé avec succès', 'success');
+            loadDashboard();
+        }
+
+        // Charger les produits récents
+        function loadRecentProducts() {
+            const container = document.getElementById('recent-products');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            const allProducts = loadProductsDatabase();
+            const recentProducts = allProducts.slice(-6);
+            
+            recentProducts.forEach(product => {
+                const productCard = createProductCard(product, true);
+                container.appendChild(productCard);
+            });
+        }
+
+        // Charger tous les produits
+        function loadProducts() {
+            const container = document.getElementById('products-grid');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            const allProducts = loadProductsDatabase();
+            filteredProducts = [...allProducts];
+            
+            filteredProducts.forEach(product => {
+                const productCard = createProductCard(product, false);
+                container.appendChild(productCard);
+            });
+        }
+
+        // Créer une carte produit
+        function createProductCard(product, isCompact = false) {
+            const div = document.createElement('div');
+            div.className = `bg-white rounded-lg shadow-md overflow-hidden card-hover card-3d ${isCompact ? 'h-64' : 'h-80'}`;
+            
+            const verifiedBadge = product.verified ? '<div class="verified-seller"></div>' : '';
+            
+            div.innerHTML = `
+                <div class="h-32 bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center text-4xl relative overflow-hidden">
+                    <div class="floating-element">${product.image}</div>
+                    <div class="absolute top-2 right-2">
+                        <span class="text-xs px-2 py-1 bg-white bg-opacity-80 rounded-full font-medium ${product.condition === 'neuf' ? 'text-green-600' : 'text-orange-600'}">${product.condition}</span>
+                    </div>
+                    ${verifiedBadge}
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2 ${isCompact ? 'text-sm' : 'text-lg'}">${product.title}</h3>
+                    <p class="text-gray-600 text-sm mb-2 line-clamp-2">${product.description}</p>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-lg font-bold text-blue-900">${formatPrice(product.price)}</span>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <i data-lucide="eye" class="h-3 w-3 mr-1"></i>
+                            ${product.views || 0}
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-3 flex items-center">
+                        <span class="w-4 h-4 bg-blue-900 rounded-full mr-2 flex items-center justify-center text-white text-xs">${product.seller.charAt(0)}</span>
+                        ${product.seller}
+                    </p>
+                    <div class="flex space-x-2">
+                        <button class="flex-1 bg-blue-900 text-white py-2 px-3 rounded text-sm hover:bg-blue-800 button-3d transition-all" onclick="orderProduct(${product.id})">
+                            Commander
+                        </button>
+                        <button class="bg-gray-200 text-gray-700 py-2 px-3 rounded text-sm hover:bg-gray-300 button-3d" onclick="contactSeller(${product.id})">
+                            💬
+                        </button>
+                        <button class="bg-orange-100 text-orange-600 py-2 px-3 rounded text-sm hover:bg-orange-200 button-3d" onclick="showSellerProfile(${product.id})">
+                            👤
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return div;
+        }
+
+        // Filtrer les produits
+        function filterProducts() {
+            const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
+            const category = document.getElementById('category-filter')?.value || '';
+            const maxPrice = document.getElementById('price-filter')?.value || '';
+            const condition = document.getElementById('condition-filter')?.value || '';
+            
+            const allProducts = loadProductsDatabase();
+            
+            filteredProducts = allProducts.filter(product => {
+                const matchesSearch = product.title.toLowerCase().includes(searchTerm) || 
+                                    product.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = !category || product.category === category;
+                const matchesPrice = !maxPrice || product.price <= parseInt(maxPrice);
+                const matchesCondition = !condition || product.condition.includes(condition);
+                
+                return matchesSearch && matchesCategory && matchesPrice && matchesCondition;
+            });
+            
+            loadProducts();
+        }
+
+        // Filtrer par catégorie depuis l'accueil
+        function filterByCategory(category) {
+            const categoryFilter = document.getElementById('category-filter');
+            if (categoryFilter) {
+                categoryFilter.value = category;
+            }
+            showPage('catalog');
+            setTimeout(() => {
+                filterProducts();
+            }, 100);
+        }
+
+        // Commander un produit avec paiement Wave
+        function orderProduct(productId) {
+            if (!currentUser) {
+                showNotification('Veuillez vous connecter pour commander', 'error');
+                showPage('login');
+                return;
+            }
+            
+            const allProducts = loadProductsDatabase();
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+            
+            // Trouver le vendeur
+            const users = loadUsersDatabase();
+            const seller = users.find(user => user.id === product.sellerId);
+            
+            if (!seller) {
+                showNotification('Vendeur introuvable', 'error');
+                return;
+            }
+            
+            // Créer la modal de commande
+            const orderModal = document.createElement('div');
+            orderModal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            orderModal.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4 modal-3d">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Finaliser la commande</h3>
+                    
+                    <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <span class="text-2xl">${product.image}</span>
+                            <div>
+                                <h4 class="font-semibold">${product.title}</h4>
+                                <p class="text-sm text-gray-600">${product.seller}</p>
+                            </div>
+                        </div>
+                        <div class="text-xl font-bold text-blue-900">${formatPrice(product.price)}</div>
+                    </div>
+                    
+                    ${seller.waveNumber ? `
+                        <div class="mb-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                            <h4 class="font-semibold text-green-800 mb-2 flex items-center">
+                                <span class="mr-2">💰</span>
+                                Paiement Wave Money
+                            </h4>
+                            <p class="text-sm text-green-700 mb-2">Numéro: <strong>${seller.waveNumber}</strong></p>
+                            <p class="text-sm text-green-700">Nom: <strong>${seller.waveName || seller.name}</strong></p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Numéro de transaction Wave (après paiement)
+                            </label>
+                            <input type="text" id="transaction-id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: TXN123456789">
+                        </div>
+                    ` : `
+                        <div class="mb-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                            <p class="text-sm text-yellow-800">
+                                <strong>⚠️ Paiement en espèces</strong><br>
+                                Le vendeur n'a pas configuré Wave Money. Contactez-le pour organiser le paiement.
+                            </p>
+                        </div>
+                    `}
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Message pour le vendeur (optionnel)
+                        </label>
+                        <textarea id="buyer-message" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Lieu de livraison, questions..."></textarea>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <button onclick="confirmOrder(${productId}); this.parentElement.parentElement.parentElement.remove();" class="flex-1 bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 button-3d">
+                            Confirmer la commande
+                        </button>
+                        <button onclick="this.parentElement.parentElement.parentElement.remove();" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(orderModal);
+        }
+
+        function confirmOrder(productId) {
+            const transactionId = document.getElementById('transaction-id')?.value || '';
+            const message = document.getElementById('buyer-message')?.value || '';
+            
+            const allProducts = loadProductsDatabase();
+            const product = allProducts.find(p => p.id === productId);
+            const users = loadUsersDatabase();
+            const seller = users.find(user => user.id === product.sellerId);
+            
+            if (seller) {
+                // Créer la notification pour le vendeur
+                const notification = {
+                    id: Date.now(),
+                    type: 'order',
+                    message: `🎉 Nouvelle commande de ${currentUser.name} pour "${product.title}" - ${formatPrice(product.price)}${transactionId ? ` (Transaction: ${transactionId})` : ''}${message ? ` - Message: ${message}` : ''}`,
+                    timestamp: new Date().toISOString(),
+                    read: false,
+                    productId: productId,
+                    buyerId: currentUser.id
+                };
+                
+                // Ajouter la notification au vendeur
+                if (!seller.notifications) seller.notifications = [];
+                seller.notifications.push(notification);
+                
+                // Sauvegarder
+                const userIndex = users.findIndex(u => u.id === seller.id);
+                if (userIndex !== -1) {
+                    users[userIndex] = seller;
+                    saveUsersDatabase(users);
+                }
+                
+                showNotification(`Commande envoyée à ${seller.name} ! 🚀`, 'success');
+                
+                // Incrémenter les vues du produit
+                product.views = (product.views || 0) + 1;
+                saveProductsDatabase(allProducts);
+            }
+        }
+
+        // Contacter un vendeur
+        function contactSeller(productId) {
+            if (!currentUser) {
+                showNotification('Veuillez vous connecter pour contacter un vendeur', 'error');
+                showPage('login');
+                return;
+            }
+            
+            const allProducts = loadProductsDatabase();
+            const product = allProducts.find(p => p.id === productId);
+            if (product) {
+                const users = loadUsersDatabase();
+                const seller = users.find(user => user.id === product.sellerId);
+                
+                if (seller) {
+                    // Envoyer une notification au vendeur
+                    const notification = {
+                        id: Date.now(),
+                        type: 'contact',
+                        message: `💬 ${currentUser.name} souhaite vous contacter pour "${product.title}"`,
+                        timestamp: new Date().toISOString(),
+                        read: false,
+                        productId: productId,
+                        buyerId: currentUser.id
+                    };
+                    
+                    if (!seller.notifications) seller.notifications = [];
+                    seller.notifications.push(notification);
+                    
+                    const users_updated = loadUsersDatabase();
+                    const userIndex = users_updated.findIndex(u => u.id === seller.id);
+                    if (userIndex !== -1) {
+                        users_updated[userIndex] = seller;
+                        saveUsersDatabase(users_updated);
+                    }
+                    
+                    showNotification(`Message envoyé à ${product.seller} ! 📩`, 'success');
+                }
+            }
+            
+            showPage('messaging');
+        }
+
+        // Afficher le profil d'un vendeur
+        function showSellerProfile(productId) {
+            showPage('seller-profile');
+        }
+
+        // Charger le profil vendeur
+        function loadSellerProfile() {
+            const sellerProducts = document.getElementById('seller-products');
+            if (!sellerProducts) return;
+            
+            sellerProducts.innerHTML = '';
+            
+            const allProducts = loadProductsDatabase();
+            const products = allProducts.slice(0, 3);
+            
+            products.forEach(product => {
+                const productCard = createProductCard(product, false);
+                sellerProducts.appendChild(productCard);
+            });
+        }
+
+        // Envoyer un message
+        function sendMessage(event) {
+            event.preventDefault();
+            
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput?.value.trim();
+            
+            if (!message) return;
+            
+            const messagesContainer = document.getElementById('messages-container');
+            if (!messagesContainer) return;
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'flex justify-end';
+            messageDiv.innerHTML = `
+                <div class="bg-blue-900 text-white p-3 rounded-lg max-w-xs">
+                    ${sanitizeInput(message)}
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messageInput.value = '';
+            
+            // Faire défiler vers le bas
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Système de notifications
+        function updateNotificationsBadge() {
+            if (!currentUser || !currentUser.notifications) return;
+            
+            const unreadCount = currentUser.notifications.filter(n => !n.read).length;
+            const badge = document.getElementById('notifications-badge');
+            
+            if (badge) {
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+        }
+
+        function showUserNotifications() {
+            if (!currentUser || !currentUser.notifications) return;
+            
+            const unreadNotifications = currentUser.notifications.filter(notif => !notif.read);
+            
+            unreadNotifications.forEach(notification => {
+                showNotification(notification.message, notification.type);
+                notification.read = true;
+            });
+            
+            if (unreadNotifications.length > 0) {
+                saveUserData(currentUser);
+                let users = loadUsersDatabase();
+                const userIndex = users.findIndex(user => user.id === currentUser.id);
+                if (userIndex !== -1) {
+                    users[userIndex] = currentUser;
+                    saveUsersDatabase(users);
+                }
+                updateNotificationsBadge();
+            }
+        }
+
+        // Charger les données admin
+        function loadAdminData() {
+            loadUsersTable();
+            loadProductsTable();
+        }
+
+        function loadUsersTable() {
+            const tbody = document.getElementById('users-table');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            const users = loadUsersDatabase();
+            users.forEach(user => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getRoleBadgeClass(user.role)}">
+                            ${user.role}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button class="text-blue-600 hover:text-blue-900 mr-3">Modifier</button>
+                        <button class="text-red-600 hover:text-red-900">Bloquer</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function loadProductsTable() {
+            const tbody = document.getElementById('products-table');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            const products = loadProductsDatabase();
+            products.forEach(product => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${product.title}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.seller}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatPrice(product.price)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Actif
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button class="text-green-600 hover:text-green-900 mr-3">Approuver</button>
+                        <button class="text-red-600 hover:text-red-900">Supprimer</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Utilitaires
+        function formatPrice(price) {
+            return new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: 'XOF',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        function getRoleBadgeClass(role) {
+            switch(role) {
+                case 'admin': return 'bg-red-100 text-red-800';
+                case 'vendeur': return 'bg-blue-100 text-blue-800';
+                case 'acheteur': return 'bg-green-100 text-green-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg notification max-w-sm ${
+                type === 'success' ? 'bg-green-500 text-white' : 
+                type === 'error' ? 'bg-red-500 text-white' : 
+                type === 'order' ? 'bg-orange-500 text-white' :
+                type === 'contact' ? 'bg-blue-500 text-white' :
+                'bg-blue-500 text-white'
+            }`;
+            
+            const icon = type === 'success' ? '✅' : 
+                        type === 'error' ? '❌' : 
+                        type === 'order' ? '🛒' : 
+                        type === 'contact' ? '💬' : 'ℹ️';
+            
+            notification.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <span class="text-xl">${icon}</span>
+                    <span class="flex-1">${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-white hover:text-gray-200 ml-2">
+                        ✕
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove après 5 secondes
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.style.animation = 'slideOutNotification 0.3s ease-in forwards';
+                    setTimeout(() => {
+                        if (notification.parentElement) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }
+            }, 5000);
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser Lucide icons
+            lucide.createIcons();
+            
+            // Créer les particules d'arrière-plan
+            createParticles();
+            
+            // Charger l'utilisateur connecté s'il existe
+            const savedUser = loadUserData();
+            if (savedUser) {
+                currentUser = savedUser;
+                updateUserInterface();
+                
+                // Afficher les notifications non lues
+                setTimeout(() => {
+                    showUserNotifications();
+                }, 1000);
+            }
+            
+            // Charger la page d'accueil
+            showPage('home');
+            
+            // Vérifier les notifications périodiquement (toutes les 30 secondes)
+            setInterval(() => {
+                if (currentUser) {
+                    const users = loadUsersDatabase();
+                    const updatedUser = users.find(user => user.id === currentUser.id);
+                    if (updatedUser && updatedUser.notifications) {
+                        const currentNotifIds = (currentUser.notifications || []).map(n => n.id);
+                        const newNotifications = updatedUser.notifications.filter(notif => 
+                            !notif.read && !currentNotifIds.includes(notif.id)
+                        );
+                        
+                        if (newNotifications.length > 0) {
+                            currentUser.notifications = updatedUser.notifications;
+                            saveUserData(currentUser);
+                            showUserNotifications();
+                        }
+                    }
+                }
+            }, 30000);
+            
+            // Réinitialiser les icônes après chargement dynamique
+            setTimeout(() => {
+                lucide.createIcons();
+            }, 1000);
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'993b1f9f80f7ef06',t:'MTc2MTMyNjIwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
